@@ -19,7 +19,6 @@ function offerBarrage(barrage) {
     var barrageDiv = document.createElement('div');
     var speed = barrage.speed;
     var topPosition = barrage.topPosition;
-    console.log(topPosition);
     barrageDiv.innerHTML = barrage.message;
 
     var containerWidth = barrageContainer.offsetWidth;
@@ -34,7 +33,7 @@ function offerBarrage(barrage) {
 
     barrageContainer.appendChild(barrageDiv);
 
-    var id = setInterval(frame, 1);
+    var id = setInterval(frame, 10);
     function frame() {
         if (curLeftPos < -barrageDiv.offsetWidth) {
             clearInterval(id);
@@ -44,15 +43,42 @@ function offerBarrage(barrage) {
             barrageDiv.style.left = curLeftPos + 'px';
         }
     }
-
 }
+
+var focusOn = true;
 
 function getRandomBarrage() {
     var testBarrage = {};
-    testBarrage.message = "This is just a test, random message" + Math.floor(Math.random() * 10);
-    testBarrage.speed = Math.random() - 1.5;
+    testBarrage.message = "This is just a test, random message " + Math.floor(Math.random() * 10);
+    testBarrage.speed = - 0.5 - Math.random();
     testBarrage.topPosition = Math.floor(Math.random() * barrageContainer.offsetHeight);
     return testBarrage;
 }
 
-var barrageLoop = setInterval(function (){offerBarrage(getRandomBarrage())}, 1000);
+function m_status() {
+    var res = true;
+    chrome.storage.sync.get('status', function(data) {
+        console.log(data.status);
+        if (data.status == "on")
+            res = true;
+        else
+            res = false;
+    });
+    return false;
+    return (res && focusOn);
+}
+
+var barrageLoop = setInterval(function (){
+        // if (!m_status())
+        if (!focusOn)
+            return;
+        offerBarrage(getRandomBarrage());
+    }, 5000);
+
+$(window).focus(function() {
+    focusOn = true;
+});
+
+$(window).blur(function() {
+    focusOn = false;
+});

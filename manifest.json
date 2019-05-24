@@ -3,7 +3,7 @@
   "description" : "Barrage comments",
   "version": "1.0",
   "browser_action": {
-    "default_popup": "source/html/hello.html",
+    "default_popup": "source/html/popup.html",
     "default_icon": "source/images/hello_extensions.png"
   },
   "manifest_version": 2,
@@ -13,17 +13,18 @@
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F"
       },
-      "description": "Opens hello.html"
+      "description": "Opens popup.html"
     }
   },
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
-      "js": ["source/js/content.js"],
+      "js": ["vender/jquery/jquery-3.4.1.min.js", "source/js/content.js"],
       "run_at": "document_end"
     }
   ],
   "permissions":[
+    "storage",
     "contextMenus", 
     "tabs",
     "http://*/*",
